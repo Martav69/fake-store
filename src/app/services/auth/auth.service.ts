@@ -8,10 +8,15 @@ import { lastValueFrom } from 'rxjs';
 export class AuthService {
 
   private readonly http = inject(HttpClient)
-  private token: string | undefined
+  private _token: string | undefined
+
+  get token():string | undefined {
+
+    return this._token
+  }
 
   get isAuthenticated(): boolean {
-    return !!this.token; // Transforme le token en booleen
+    return !!this._token; // Transforme le token en booleen
   }
 
   async login(email:string, password: string){
@@ -20,9 +25,8 @@ export class AuthService {
         
         const req = this.http.post<{access_token:string}>('https://api.escuelajs.co/api/v1/auth/login', {email, password})
         const response = await lastValueFrom(req)
-        this.token = `Bearer ${response.access_token}`
-        console.log('success', this.token)
-        
+        this._token = response.access_token
+       
       } 
       catch (e) {
         console.error('Login failed', e)
@@ -31,6 +35,6 @@ export class AuthService {
   }
 
   logout(): void {
-    this.token = undefined;
+    this._token = undefined;
   }
 }

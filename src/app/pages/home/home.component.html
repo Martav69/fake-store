@@ -1,6 +1,25 @@
-<div class="grid grid-cols-3 mt-10">
+<h1 class="text-3xl font-bold text-center my-5 text-emerald-700 uppercase">Ma Boutique</h1>
+
+
+    <form 
+    *ngIf="searchForm"
+    [formGroup]="searchForm"
+    (ngSubmit)="onSubmitSearch()"
+    
+    class="flex justify-center gap-2">
+        <input
+        formControlName="search"
+        type="text"
+        class="w-1/2 p-2 border border-gray-300 rounded-md backdrop:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        placeholder="Search for a Product ...">
+        <button type="submit" class="bg-emerald-500 hover:enabled:bg-emerald-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Search</button>
+    </form>
+
+  <h3 class="text-xl font-bold text-center my-5 text-emerald-700 uppercase">Produit à la une </h3>
+
+  <div class="flex justify-center gap-4">
     <app-product-card
-    *ngFor="let p of product"
-    [product]="p"
-    ></app-product-card>
-</div>
+      *ngFor="let p of product"
+      [product]="p">
+    </app-product-card>
+  </div>

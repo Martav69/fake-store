@@ -1,8 +1,12 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth/auth.service';
-import { Router } from '@angular/router';
+
+
+export interface LoginFormContent {
+  email: string
+  password : string
+}
 
 @Component({
   selector: 'app-login-form',
@@ -11,39 +15,36 @@ import { Router } from '@angular/router';
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.scss'
 })
+
+
 export class LoginFormComponent implements OnInit  {
 
-  private readonly authService = inject(AuthService)
-  private readonly router = inject(Router)
 
 
+  @Input()errMsg?:string
+
+  @Output() formSubmitted: EventEmitter<LoginFormContent> = new EventEmitter<LoginFormContent>()
+  
   form: FormGroup
-  errMsg:string
 
   ngOnInit(): void {
     
     this.form = new FormGroup({
-      email: new FormControl('', [
+      email: new FormControl('john@mail.com', [
         Validators.required,
         Validators.minLength(4),
       ]),
-      password: new FormControl('', [
+      password: new FormControl('changeme', [
         Validators.required,
         Validators.minLength(4),
       ])
     })
   }
 
-  onSubmitForm(){
+  async onSubmitForm():Promise<void> {
     if(this.form.valid){
       const {email, password} = this.form.value
-      try {
-        this.authService.login(email,password)
-        this.router.navigateByUrl('/')
-      }
-      catch (e:unknown){
-      this.errMsg = typeof e === 'string' ? e : "An Error Occured"
+      this.formSubmitted.emit({email,password})
     }
   }
-}
 }
